@@ -564,8 +564,12 @@
                     if (avgDist < 0.25) {
                         isFist = true;
                         state = 'TREE';
+                        
+                        wasPinching = false;
+                        lockSelectedPhoto = false;
+                        pinnedIndex = null;
+                        return;
                     }
-                    
                     // 🖐 OPEN → EXPLODE
                     const isPinching = pinchDist < 0.05;
 
