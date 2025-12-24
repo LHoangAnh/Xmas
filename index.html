@@ -145,6 +145,8 @@
         let lockSelectedPhoto = false;
         let wasPinching = false;
         let pinnedIndex = null;
+        let lastHandTime = performance.now();
+        const NO_HAND_DELAY = 1200; // ms
 
 
 
@@ -518,10 +520,11 @@
             hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
 
             hands.onResults(results => {
+                const now = performance.now();
+                let detected = false;
                 ctx.clearRect(0,0,100,75); 
                 ctx.drawImage(results.image, 0, 0, 100, 75);
                 
-                let detected = false;
                 isFist = false;
 
                 // --- Hand Logic  ---
@@ -540,6 +543,7 @@
                 // ✋ 1 tay
                 if (results.multiHandLandmarks.length > 0) {
                     detected = true;
+                    lastHandTime = now;
                     const lm = results.multiHandLandmarks[0];
                     handX = lm[9].x;
                     // ===== INERTIA CALC =====
@@ -608,7 +612,7 @@
                                     // ❌ KHÔNG PHÁT HIỆN TAY → GIỮ NGUYÊN STATE
                                     // (KHÔNG set state = TREE nữa)
                                 });
-
+                                        
             const cameraUtils = new Camera(video, {
                 onFrame: async () => { await hands.send({image: video}); }, width: 320, height: 240
             });
